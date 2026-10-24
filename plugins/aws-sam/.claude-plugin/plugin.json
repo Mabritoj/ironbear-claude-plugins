@@ -1,0 +1,8 @@
+{
+  "name": "aws-sam",
+  "description": "Guidance for scaffolding, writing, and reviewing AWS SAM (Serverless Application Model) projects.",
+  "version": "0.1.0",
+  "author": {
+    "name": "IronBEAR"
+  }
+}
