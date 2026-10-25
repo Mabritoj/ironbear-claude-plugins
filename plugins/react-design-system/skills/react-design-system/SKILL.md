@@ -72,7 +72,8 @@ ProfileMenu, route guards, ErrorBoundary) may live in `components/` but stay
 `templates/` holds working copies of the foundation files: `styles/tokens.css`,
 `styles/global.css`, `styles/typography.module.css`,
 `components/{polymorphic.ts,ActionElement.tsx,fieldContext.ts}`, `utils/{cx.ts,theme.ts}`,
-`hooks/{useRovingSelection.ts,useControllableState.ts}`, `test/{cssGuardrails.ts,cssGuardrails.test.ts,dialogShim.ts}`.
+`hooks/{useRovingSelection.ts,useControllableState.ts}`, `test/{cssGuardrails.ts,cssGuardrails.test.ts,dialogShim.ts}`,
+`lint/{stylelint.config.mjs,eslint.design-system.js}` (project root).
 Copy them, then replace `TEMPLATE:`-marked values with the project's own.
 
 ## The rules, and why
@@ -83,7 +84,9 @@ Copy them, then replace `TEMPLATE:`-marked values with the project's own.
    colors by role (`--color-warning` = needs attention, `--color-destructive`
    = errors and irreversible actions), not by hue, so a rename never ripples.
    A guardrail test fails on hex/rgb/hsl, font names and `outline: none`
-   anywhere else -- without it, drift comes back within weeks.
+   anywhere else -- without it, drift comes back within weeks. Lint rules
+   (`templates/lint/`) flag the same in the editor, plus raw controls,
+   navigating buttons and inline styles in feature code.
 
 2. **Themes key on `[data-theme]`, not `:root[data-theme]`.** Then a subtree
    can opt in (`<div data-theme="dark">` on an always-dark login page) instead
@@ -160,7 +163,8 @@ anatomy of `Button`/`Field`/`Card` are in `references/components.md`.
 
 ## Verifying a change
 
-- `typecheck`, `lint`, the test suite (guardrails included) -- all green.
+- `typecheck`, `lint` (the design-system rules included), the test suite
+  (guardrails included) -- all green.
 - The axe scan of the catalog page passes (`references/testing.md`).
 - Look at it in a real browser, in **both themes**, at ~375px, 768px and
   desktop. jsdom can't show you top-layer dialogs, focus trapping, layout or
@@ -193,6 +197,6 @@ anatomy of `Button`/`Field`/`Card` are in `references/components.md`.
 - `references/components.md` -- common primitives, anatomy, prop conventions, controlled/uncontrolled state, composition, React 19 forms, forced colors and reduced motion, checklist for a new primitive
 - `references/polymorphism.md` -- both patterns with full typings, usage, pitfalls
 - `references/overlays.md` -- Modal on native `<dialog>`, ConfirmDialog, Menu, Popover/bottom sheet, Tooltip, Toast, roving focus
-- `references/testing.md` -- guardrail test, dialog shim, what to assert, catalog page, axe scan
+- `references/testing.md` -- guardrail test, lint rules, dialog shim, what to assert, catalog page, axe scan
 - `references/audit-and-migration.md` -- measuring drift, phased plan, migrating pages safely
 - `references/claude-design-system.md` -- code layout that converts into a Claude Design System artifact, and how the conversion maps

@@ -22,6 +22,41 @@ Copy `templates/test/cssGuardrails.ts` and `cssGuardrails.test.ts` into
 It makes "no raw colors, no raw fonts, no outline: none" a build failure,
 which is the only thing that keeps a cleaned-up codebase clean.
 
+## Lint rules
+
+The guardrail test fails CI; lint rules flag the same problems in the
+editor, while they're being written, and cover JSX the CSS test can't see.
+Two templates, each a config to merge into what the project already has
+(adding stylelint or ESLint plugins is a new dev dependency -- ask first):
+
+- `templates/lint/stylelint.config.mjs` -- outside `tokens.css`: no hex,
+  named colors or color functions (`rgb()`, `hsl()`, `oklch()`...), no
+  `outline: none`, `font-family` only from `var(--font-*)`. `color-mix()`
+  over tokens, `currentColor`, `transparent` and forced-colors system colors
+  (`Highlight`, `CanvasText`) pass. Exceptions are a
+  `/* stylelint-disable-next-line <rule> -- reason */` comment, and a disable
+  without a reason is itself an error.
+- `templates/lint/eslint.design-system.js` -- a flat-config fragment:
+  `jsx-a11y` recommended (alt text, labels, valid ARIA), `react-hooks`
+  recommended, and `no-restricted-syntax` rules that flag:
+  - inline `style` objects with real CSS properties (custom properties like
+    `{ '--swatch': hex }` pass) -- everywhere under `src/`;
+  - raw `<button>`, `<input>`, `<select>`, `<textarea>`, `<dialog>` in
+    feature and route folders -- use or extend a primitive;
+  - `onClick` handlers calling `navigate()` in feature code -- use a link.
+
+ESLint's `no-restricted-syntax` doesn't merge across config entries (a
+later entry for the same files replaces it), which is why the feature-folder
+entry repeats the inline-style selector. Keep both lists together when
+editing. Checked against ESLint 10 and Stylelint 17; `eslint-plugin-jsx-a11y`
+6.10 doesn't list ESLint 10 as a peer yet, so on 10 npm needs
+`--legacy-peer-deps` (it works).
+
+Keep the CSS guardrail test either way: it's the check CI can't skip, and it
+needs no extra dependencies. In a drifted app, start the lint rules as
+`warn`, or with the same allowlist idea as the guardrail, and flip to
+`error` once a folder is migrated.
+
 ## Native dialog in jsdom
 
 jsdom implements `<dialog>` but not `showModal()`/`close()`. Install

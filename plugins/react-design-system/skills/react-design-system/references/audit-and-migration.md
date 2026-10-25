@@ -52,7 +52,7 @@ The phase order that worked, least to most risky:
 
 | Phase | Content | Why this order |
 | --- | --- | --- |
-| 0 Baseline + guardrails | Green typecheck/tests; global `:focus-visible`; guardrail test with an allowlist of today's offenders | Can't measure regressions from a red baseline; the allowlist turns cleanup into a number |
+| 0 Baseline + guardrails | Green typecheck/tests; global `:focus-visible`; guardrail test with an allowlist of today's offenders; design-system lint rules at `warn` | Can't measure regressions from a red baseline; the allowlist turns cleanup into a number |
 | 1 Tokens | Token file with scales and `[data-theme]` scoping; codemod modules onto it; kill private palettes | Mostly mechanical, visible change <= 2px; everything later depends on it |
 | 2 Primitives | Foundations (`cx`, polymorphic types, typography) -> actions -> display -> forms; catalog page | Build before migrating so pages have something to move to |
 | 3 Overlays | Modal on `<dialog>`, ConfirmDialog, Menu, Popover | Highest behavior risk; isolate it and verify in a browser |
