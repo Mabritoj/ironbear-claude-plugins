@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: design-sync-readiness-existing-app
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  readiness.md that catches Taskboard's real sync blockers: the color-mix() token is dropped, tokens are named by hue with no usage comments, the dark theme is keyed on :root[data-theme] (no subtree opt-in) and redefines only some tokens, component modules hardcode hex colors and px values, there is no components/index.ts and an app composite (ProjectHeader, using the store) sits in components/, the logo is inline SVG in TSX, there are no per-component docs; then an ordered fix list. No artifact built and no code changed.

@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: add-tooltip-existing-app
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  src/components/Tooltip.tsx + Tooltip.module.css + Tooltip.test.tsx in the repo's style (named export, TooltipProps), accessible (role="tooltip", aria wiring, shows on hover AND keyboard focus, Escape hides), styled only with custom properties from index.css (adding role-named tokens there if needed, no hex literals), no inline styles beyond a custom property, ProjectHeader untouched, tests and typecheck pass, and the run points out the drift it noticed (hardcoded colors, IconButton's optional label, focus outline removed) instead of silently fixing unrelated files.
