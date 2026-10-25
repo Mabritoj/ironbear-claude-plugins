@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: add-tabs-existing-app
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  Compound Tabs (named-export parts sharing state through context, no child inspection) with tablist/tab/tabpanel roles and aria-selected/aria-controls wiring, roving tabindex with arrow keys and Home/End, controlled (value + change callback) and uncontrolled (defaultValue) modes, selected state not shown by background alone, tokens-only CSS, used on ProjectPage with the header untouched, checks reported honestly.

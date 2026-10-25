@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: add-confirm-dialog-existing-app
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  Modal on native <dialog> with showModal(), Escape cancels through onCancel, backdrop clicks don't close by default, focus returns to the opener, labelled by its title via useId; ConfirmDialog with a destructive confirm that shows pending state while Cancel and Escape are disabled; CSS on custom properties only; tests that work in jsdom; checks reported honestly.

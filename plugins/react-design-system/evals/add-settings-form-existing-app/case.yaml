@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: add-settings-form-existing-app
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  A Field that wires label, hint and error to its control (ids from useId/context, aria-describedby, aria-invalid, error with role=alert); form controls in src/components/; the form uses useActionState / a form action, shows the required-name error through Field, and the submit button shows the pending state (useFormStatus or isPending); no raw inputs or buttons in the feature file; tokens-only CSS; header untouched; checks reported honestly.
