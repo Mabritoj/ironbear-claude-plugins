@@ -1,0 +1,118 @@
+/*
+  Design tokens -- the ONLY stylesheet allowed to contain raw colors and font
+  names (test/cssGuardrails.test.ts enforces it). Every module reads var(--*).
+
+  Layout for a clean Claude Design System sync:
+  - one token per line, `--name: literal;`, with a trailing comment saying
+    WHEN to use it (that comment becomes the token's usage note);
+  - colors are hex / rgb() / hsl() / oklch() literals, or a plain
+    var(--other-color) alias -- never color-mix() or calc() here (put those
+    in the component module that needs them);
+  - theme-independent scales on :root, colors per [data-theme].
+
+  Breakpoints can't be custom properties (var() isn't allowed in @media), so
+  they stay literals by convention: 640px (phone) and 860px (tablet).
+  TEMPLATE: replace every value below with the brand's real ones.
+*/
+
+:root {
+  --content-max-width: 1200px; /* the one page width -- used by .app-container only */
+
+  /* Type: families are the only place font names appear. */
+  --font-sans: 'Inter', system-ui, sans-serif; /* all UI text */
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace; /* labels, codes, numbers */
+
+  --text-xs: 11px; /* eyebrows, badges, field labels */
+  --text-sm: 12px; /* meta, secondary text */
+  --text-md: 13px; /* default UI text, buttons */
+  --text-base: 14px; /* body copy, inputs */
+  --text-lg: 16px; /* card titles */
+  --text-xl: 18px; /* modal titles, lead paragraphs */
+  --text-2xl: 22px; /* section headings, stat values */
+  --text-3xl: 28px; /* page <h1> */
+  --text-display: 40px; /* marketing hero only */
+
+  /* Space: 4px base. */
+  --space-1: 4px; /* icon-to-label gap */
+  --space-2: 8px; /* tight stacks, chip gaps */
+  --space-3: 12px; /* control padding, list gaps */
+  --space-4: 16px; /* card padding (sm), phone gutter */
+  --space-6: 24px; /* card padding (md), section gaps */
+  --space-8: 32px; /* page sections */
+  --space-12: 48px; /* page top/bottom */
+
+  /* Radius */
+  --radius-sm: 6px; /* chips, swatches */
+  --radius-md: 8px; /* buttons, inputs, menu items */
+  --radius-lg: 12px; /* cards, popovers, modals */
+  --radius-full: 9999px; /* pills, avatars */
+
+  /* Elevation -- shadows stay black in both themes. */
+  --shadow-raised: 0 6px 20px rgb(0 0 0 / 0.2); /* hovered cards */
+  --shadow-popover: 0 18px 44px rgb(0 0 0 / 0.3); /* menus, popovers */
+  --shadow-modal: 0 30px 70px rgb(0 0 0 / 0.4); /* dialogs */
+
+  /* Layering: floating widgets < popovers/menus < modal sheets.
+     Native <dialog> uses the top layer and needs no z-index. */
+  --z-floating: 40;
+  --z-popover: 50;
+  --z-modal: 1000;
+
+  /* Motion */
+  --duration-fast: 120ms; /* hovers, color changes */
+  --duration-base: 180ms; /* panels opening */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/*
+  Themes key on [data-theme], not :root[data-theme], so a subtree can opt in
+  (<div data-theme="dark"> on an always-dark marketing page). Such a subtree
+  must also set `color: var(--color-text)` -- `color` inherits a computed value.
+  The first theme block is the default (it also matches :root).
+*/
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  --color-bg: #fafaf9; /* page background */
+  --color-surface: #ffffff; /* cards, popovers, inputs on bg */
+  --color-surface-sunken: #f2f1ee; /* a panel inside a card */
+  --color-border: rgba(0, 0, 0, 0.08); /* card and divider lines */
+  --color-border-strong: rgba(0, 0, 0, 0.14); /* control borders */
+  --color-overlay: rgb(0 0 0 / 0.5); /* modal/sheet backdrop */
+  --color-text: #1c1b19; /* primary text on bg/surface */
+  --color-text-muted: #66625b; /* secondary text, labels */
+  --color-text-subtle: #8f8a82; /* placeholders, disabled -- not for body text */
+  --color-brand: #b4572e; /* primary actions, links, selected state */
+  --color-brand-hover: #9c4824; /* hover of brand fills */
+  --color-brand-ink: #ffffff; /* text/icons on a brand fill */
+  --color-warning: #a5611a; /* needs attention, not an error (low stock) */
+  --color-warning-bg: rgba(165, 97, 26, 0.12); /* warning badge/alert fill */
+  --color-success: #3f7a3a; /* healthy, done */
+  --color-success-bg: rgba(63, 122, 58, 0.12); /* success badge/alert fill */
+  --color-destructive: #b42318; /* errors and irreversible actions */
+  --color-destructive-bg: rgba(180, 35, 24, 0.08); /* error alert, danger zone */
+  --color-focus-ring: var(--color-brand); /* the global :focus-visible outline */
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: #121110;
+  --color-surface: #1c1a17;
+  --color-surface-sunken: #171410;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.14);
+  --color-overlay: rgb(0 0 0 / 0.6);
+  --color-text: #ece8e2;
+  --color-text-muted: #a39c92;
+  --color-text-subtle: #736c62;
+  --color-brand: #d9925f;
+  --color-brand-hover: #e6a878;
+  --color-brand-ink: #1a120b;
+  --color-warning: #e09a6a;
+  --color-warning-bg: rgba(224, 154, 106, 0.14);
+  --color-success: #8fb887;
+  --color-success-bg: rgba(143, 184, 135, 0.12);
+  --color-destructive: #e8716a;
+  --color-destructive-bg: rgba(232, 113, 106, 0.1);
+  --color-focus-ring: var(--color-brand);
+}

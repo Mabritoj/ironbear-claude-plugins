@@ -1,0 +1,16 @@
+.iconButton {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--gray-600);
+  cursor: pointer;
+}
+
+.iconButton:hover {
+  background: var(--gray-100);
+  color: var(--gray-900);
+}

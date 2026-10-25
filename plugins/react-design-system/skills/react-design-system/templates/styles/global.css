@@ -1,0 +1,48 @@
+/* Global base -- imported once from main.tsx. Keep it this short. */
+@import './tokens.css';
+
+/* Centered content otherwise shifts a few px between pages with and
+   without a vertical scrollbar. */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* A modal <dialog> makes the page inert but not unscrollable. */
+html:has(dialog:modal) {
+  overflow: hidden;
+}
+
+/*
+  The ONE keyboard focus indicator. Modules never write `outline: none`; for a
+  borderless input inside a styled wrapper (search box, unit suffix), put the
+  ring on the wrapper with :focus-within and opt the inner input out with
+  `.inner:focus-visible { outline: none; }` -- the guardrail allows exactly that.
+*/
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+a {
+  color: var(--color-brand);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-brand-hover);
+}
+
+/* Every page's outer wrapper renders this alongside its module class, so the
+   header never shifts sideways between pages. No page sets its own max-width. */
+.app-container {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  box-sizing: border-box;
+}

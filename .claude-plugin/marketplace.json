@@ -21,5 +21,11 @@
       "description": "Guidance for building services (Lambda, MCP server, OpenAPI, API Gateway targets) that plug into an AgentCore Gateway via its CloudFormation exports.",
       "source": "./plugins/agentcore-consumer"
     }
+    ,
+    {
+      "name": "react-design-system",
+      "description": "How to build, audit, extend or align a React + TypeScript design system",
+      "source": "./plugins/react-design-system"
+    }
   ]
 }
