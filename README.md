@@ -9,7 +9,7 @@ installable plugin.
 Add this repo as a marketplace once, then install whichever plugins you want:
 
 ```bash
-claude plugin marketplace add https://github.com/Mabritoj/claude
+claude plugin marketplace add https://github.com/Mabritoj/ironbear-claude-plugins
 ```
 
 Then run the install command for whichever plugin you want from the table below.
