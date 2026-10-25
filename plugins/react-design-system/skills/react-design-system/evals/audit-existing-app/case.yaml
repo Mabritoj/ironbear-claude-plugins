@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: audit-existing-app
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The measuring step is delegated to the design-drift-auditor agent, and the main run writes docs/design-system-audit.md from its report: findings with counts and file names covering Taskboard's real drift (hex literals in Button/Card/ProjectList modules and the inline SVG in Logo.tsx, button:focus { outline: none } with no :focus-visible replacement, hue-named tokens, :root[data-theme] scoping with a partial dark theme, color-mix() token, IconButton's optional label leaving two header buttons unnamed, Card navigating via onClick + navigate(), the ALL-CAPS "PROJECTS" heading, a page-local 1080px max-width), then a phased plan ordered baseline/guardrails -> tokens -> primitives -> overlays -> migrate -> lock in, with decisions needed. No source files changed.

@@ -5,6 +5,10 @@ progress is visible.
 
 ## 1. Measure (run from `src/`, adjust globs)
 
+In a plugin install, the `design-drift-auditor` agent runs this section
+and the "Also read" list and returns only the findings. Spawn it instead
+of running the greps inline, then write the plan from its report.
+
 ```bash
 # Color literals outside the token file
 grep -rnoE "#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(" --include=*.css . | grep -v styles/tokens.css | wc -l
