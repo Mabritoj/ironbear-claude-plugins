@@ -21,7 +21,7 @@ else, keep the principles and translate the mechanics (see "Other stacks").
 | The user wants... | Do this |
 | --- | --- |
 | A design system for a **new** app | Lay down the folder layout and foundation files below (copy `templates/`), then build primitives as features need them. |
-| To **audit or align** an existing app | Follow `references/audit-and-migration.md`: measure drift with greps, write a phased plan, migrate page by page with before/after screenshots. For the measuring step, spawn the `design-drift-auditor` agent if it's available; it returns the findings table without flooding the conversation with grep output. Write the plan and do the migration yourself. |
+| To **audit or align** an existing app | Follow `references/audit-and-migration.md`: measure drift with greps, write a phased plan, migrate page by page with before/after screenshots. For the measuring step on a large app (roughly more than 30 stylesheet files or 3,000 lines of CSS), spawn the `design-drift-auditor` agent if it's available; it returns the findings table without flooding the conversation with grep output. On a smaller app, read the files and run the greps yourself. Write the plan and do the migration yourself. |
 | A **new primitive** or a change to one | Read `references/components.md` (and `references/polymorphism.md` if it's clickable or its tag varies, `references/overlays.md` if it floats). Add it to the catalog page and the barrel. |
 | A **new token** or theme | Read `references/tokens.md`. |
 | To **sync to / build a Claude Design System** | Read `references/claude-design-system.md`. |

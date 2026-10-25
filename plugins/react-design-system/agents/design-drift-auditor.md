@@ -1,6 +1,6 @@
 ---
 name: design-drift-auditor
-description: Read-only measurement of UI drift in an existing React app - color literals outside the token file, distinct radii/font sizes/shadows/z-indexes, focus-ring suppressions, hand-styled buttons/inputs in feature code, navigation done with buttons, inline styles, ALL-CAPS labels, page-local max-widths, theme scoping. Spawn it for step 1 ("Measure") of a react-design-system audit or alignment, when the app is large enough that the raw grep output would flood the conversation. It returns a findings table with counts and file names; it does not write the plan, change files or make product decisions.
+description: Read-only measurement of UI drift in an existing React app - color literals outside the token file, distinct radii/font sizes/shadows/z-indexes, focus-ring suppressions, hand-styled buttons/inputs in feature code, navigation done with buttons, inline styles, ALL-CAPS labels, page-local max-widths, theme scoping. Spawn it for step 1 ("Measure") of a react-design-system audit or alignment, when the app is large: roughly more than 30 stylesheet files or 3,000 lines of CSS. Below that, reading the files directly is cheaper, so don't spawn it. It returns a findings table with counts and file names; it does not write the plan, change files or make product decisions.
 model: inherit
 tools: ["Read", "Grep", "Glob", "Bash", "Skill"]
 ---
