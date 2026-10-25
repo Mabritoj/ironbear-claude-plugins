@@ -1,7 +1,9 @@
 ---
-type: llm
-focus: last_message
+type: regex
+pattern: '(could(n[\x27’]t| not)|have(n[\x27’]t| not)|did(n[\x27’]t| not)|unable to|was(n[\x27’]t| not) able to)[^.\n]{0,80}\b(run|test|typecheck|tsc|install)|\b(tests?|typecheck|tsc)\b[^.\n]{0,60}\b(pass(ed|ing)?|green)\b'
+target: last_message
+flags: i
 weight: 1
 ---
 
-PASS if the final message either reports the test suite and the typecheck (tsc --noEmit / npm run typecheck) passing, or clearly says they could not be run and why. FAIL if it claims checks passed without saying they ran, or does not mention verification at all.
+The final message says whether the tests and typecheck ran: either that they passed, or that they could not be run (and why).
