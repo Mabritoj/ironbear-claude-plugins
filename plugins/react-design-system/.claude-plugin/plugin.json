@@ -1,7 +1,7 @@
 {
   "name": "react-design-system",
   "description": "How to build, audit, extend or align a React + TypeScript design system",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "IronBEAR"
   }
