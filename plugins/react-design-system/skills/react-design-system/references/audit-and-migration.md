@@ -5,6 +5,12 @@ progress is visible.
 
 ## 1. Measure (run from `src/`, adjust globs)
 
+On a large app (roughly more than 30 stylesheet files or 3,000 lines of
+CSS), the `design-drift-auditor` agent runs this section and the "Also
+read" list and returns only the findings; spawn it instead of running the
+greps inline, then write the plan from its report. On a smaller app, read
+the files and run the greps yourself.
+
 ```bash
 # Color literals outside the token file
 grep -rnoE "#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(" --include=*.css . | grep -v styles/tokens.css | wc -l
