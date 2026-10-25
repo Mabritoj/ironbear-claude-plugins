@@ -20,6 +20,8 @@ Then run the install command for whichever plugin you want from the table below.
 |---|---|---|---|
 | [`aws-sam`](plugins/aws-sam) | Scaffolding, writing, and reviewing AWS SAM (Serverless Application Model) projects using Node.js/TypeScript conventions. | Skill | `claude plugin install aws-sam@ironbear-plugins` |
 | [`building-icue-widgets`](plugins/building-icue-widgets) | Scaffold, build, debug, and package Corsair iCUE / Xeneon Edge widgets (QtWebEngine sandbox). | Skill | `claude plugin install building-icue-widgets@ironbear-plugins` |
+| [`agentcore-consumer`](plugins/agentcore-consumer) | Guidance for building services (Lambda, MCP server, OpenAPI, API Gateway targets) that plug into an AgentCore Gateway via its CloudFormation exports. | Skill | `claude plugin install agentcore-consumer@ironbear-plugins` |
+| [`react-design-system`](plugins/react-design-system) | Build, audit, extend or align a React + TypeScript design system: tokens, themes, primitive components, guardrail tests, Claude Design sync. | Skill, Agent | `claude plugin install react-design-system@ironbear-plugins` |
 
 `plugins/_template/` is also present but is a starter scaffold, not an
 installable plugin — see [Adding a new plugin](#adding-a-new-plugin).
