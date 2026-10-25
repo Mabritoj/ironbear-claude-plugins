@@ -15,6 +15,11 @@
       "name": "building-icue-widgets",
       "description": "Scaffold, build, debug, and package Corsair iCUE / Xeneon Edge widgets (QtWebEngine sandbox).",
       "source": "./plugins/building-icue-widgets"
+    },
+    {
+      "name": "agentcore-consumer",
+      "description": "Guidance for building services (Lambda, MCP server, OpenAPI, API Gateway targets) that plug into an AgentCore Gateway via its CloudFormation exports.",
+      "source": "./plugins/agentcore-consumer"
     }
   ]
 }
