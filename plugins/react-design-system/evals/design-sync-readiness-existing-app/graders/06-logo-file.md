@@ -1,7 +1,7 @@
 ---
 type: llm
-focus: trace
+focus: { source: file, path: readiness.md }
 weight: 1
 ---
 
-readiness.md flags that the logo is inline SVG in Logo.tsx rather than an SVG asset file.
+PASS if the document flags that the logo exists only as inline SVG in Logo.tsx rather than as an SVG asset file. FAIL otherwise.
