@@ -23,6 +23,16 @@ html:has(dialog:modal) {
   outline-offset: 2px;
 }
 
+/* The OS "reduce motion" setting. Modules transition on the duration tokens,
+   so zeroing them turns every transition into an instant change. A @keyframes
+   animation needs its own reduced-motion rule (slow a spinner, don't stop it). */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+  }
+}
+
 body {
   margin: 0;
   background: var(--color-bg);

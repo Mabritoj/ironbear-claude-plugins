@@ -90,10 +90,40 @@ sheet can be checked. Look at it at 375px, 768px and desktop after any
 primitive or token change. If the project later adopts Storybook (a new
 dependency -- ask first), each catalog section maps to a story.
 
+## Automated accessibility check
+
+Role queries prove a primitive *can* be found by name; they don't catch low
+contrast, missing names elsewhere, or invalid ARIA. Run axe against the
+catalog page, which renders every primitive in both themes, so one scan
+covers the whole system (`@axe-core/playwright` -- a new dev dependency,
+ask first):
+
+```ts
+import AxeBuilder from '@axe-core/playwright';
+import { expect, test } from '@playwright/test';
+
+test('design catalog has no axe violations', async ({ page }) => {
+  await page.goto('/__design');
+  const { violations } = await new AxeBuilder({ page }).analyze();
+  expect(violations.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
+});
+```
+
+- Overlays are closed by default, so axe can't see their contents: open each
+  one in the test (click the trigger) and scan again.
+- Automated checks catch only part of WCAG (estimates run from about a
+  third to about half of issues). Keyboard flow, focus order,
+  focus return and screen-reader wording still need the keyboard tests above
+  and a manual pass.
+- With an existing drifted app, start with `.disableRules([...])` or an
+  allowlist of today's violations, the same way the CSS guardrail starts.
+
 ## Browser verification
 
 Use Playwright (or the project's e2e tool) for: both themes, phone/tablet/
 desktop widths, horizontal-overflow check
 (`document.documentElement.scrollWidth > innerWidth`), overlays' focus
-behavior. For migrations, take before/after full-page screenshots of every
+behavior, and the two OS settings jsdom can't emulate:
+`page.emulateMedia({ forcedColors: 'active' })` (selected/pressed states must
+still be visible) and `page.emulateMedia({ reducedMotion: 'reduce' })`. For migrations, take before/after full-page screenshots of every
 page and diff them: the only differences should be the ones you intended.
