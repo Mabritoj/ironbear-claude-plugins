@@ -168,6 +168,61 @@ Projects on React 18, or using a form library (React Hook Form), keep the
   `[aria-invalid='true']`, `[aria-pressed='true']`, `[aria-selected='true']`.
   Styling off ARIA state keeps visuals and semantics from disagreeing.
 
+## Controlled and uncontrolled state
+
+Every stateful primitive works both ways, with the same prop names
+everywhere, so callers never have to guess:
+
+| State | Controlled | Uncontrolled | Change callback |
+| --- | --- | --- | --- |
+| Selected value (Tabs, SegmentedControl, Select-like) | `value` | `defaultValue` | `onValueChange(value)` |
+| Open (Menu, Popover, Disclosure, Tooltip) | `open` | `defaultOpen` | `onOpenChange(open)` |
+| On/off (Switch, Chip, checkbox-like customs) | `checked` / `pressed` | `defaultChecked` / `defaultPressed` | `onCheckedChange(checked)` / `onPressedChange(pressed)` |
+
+- **Uncontrolled is the default.** `<Tabs defaultValue="details">` just
+  works; the parent passes `value` + the callback only when it needs to read
+  or drive the state (sync with the URL, reset after save).
+- **Callbacks receive the value, not an event** (`onValueChange('archived')`),
+  and fire in both modes.
+- **Native-element wrappers don't reinvent this.** `TextInput`, `Checkbox`
+  and `Select` on a real `<select>` pass `value`/`defaultValue`/`onChange`
+  straight through, because they extend the native element's props.
+- `templates/hooks/useControllableState.ts` implements the pattern; a
+  controlled "nothing selected" is `null`, because `undefined` means
+  uncontrolled.
+- **Modal is the exception:** it's open while mounted (`overlays.md`), so
+  the parent's conditional render *is* the controlled state, and there's no
+  `open` prop to fall out of sync with it.
+
+## Composition: props, slots, compound components, render props
+
+Pick the lightest shape that fits:
+
+| The caller needs to... | Use | Examples |
+| --- | --- | --- |
+| Pass simple content to one fixed place | A plain prop | `Field label hint error`, `Button icon`, `EmptyState title description` |
+| Put arbitrary content in a fixed region | A `ReactNode` slot prop | `Modal footer`, `EmptyState action`, `Card` children |
+| Arrange several related parts that share state | Compound components over a context | `Tabs` > `TabList` > `Tab` + `TabPanel`; `Menu` > `MenuGroup` > `MenuItem`; `Accordion` > `AccordionItem` |
+| Render its own element but receive the component's props/state | A render prop | `Menu trigger={(props) => <IconButton {...props} label="Options" />}` |
+
+- **Compound parts find each other through context, not child inspection.**
+  `React.Children.map` / `cloneElement` over children breaks as soon as a
+  caller wraps a part in a fragment or their own component. The parent
+  provides state through context; each part reads it with a hook that throws
+  a clear error outside its parent (`useTabsContext must be used inside <Tabs>`).
+- **Export the parts as named exports** (`Tabs`, `TabList`, `Tab`,
+  `TabPanel`), not as static properties (`Tabs.List`): named exports
+  tree-shake, show up in the barrel, and map to one component each in a
+  design-system sync.
+- **Render props hand over props to spread** (handlers, `aria-*`, `ref`),
+  so the caller's element -- often another primitive -- stays the real DOM
+  node. A single-child wrapper that clones its child (`Tooltip`) is fine when
+  the child is a primitive that spreads unknown props onto its element;
+  say so in its JSDoc.
+- **Don't add a slot or compound API for one use.** A prop is easier to
+  read, type and document; move to compound components when callers need to
+  reorder or repeat parts.
+
 ## States that survive forced colors and reduced motion
 
 Windows High Contrast (`forced-colors: active`) replaces every color with a
@@ -204,6 +259,8 @@ slow it down rather than stop it, so it still reads as "working".
    `<button>`); ARIA roles only when nothing native fits.
 3. Polymorphism: clickable -> `ActionProps`; tag varies -> `PolymorphicProps`; else fixed.
 4. Props: closed unions with defaults; `className` for layout; no style props.
+   Stateful? Support the controlled/uncontrolled pair with the shared names.
+   Several parts? Compound components over context (see "Composition").
 5. Module CSS on tokens only; both themes looked at; 16px touch rule for text inputs.
 6. Accessibility: name (label/aria-label), role, state attributes, keyboard;
    state visible in forced colors; transitions on duration tokens; pointer

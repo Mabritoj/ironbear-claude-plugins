@@ -72,7 +72,7 @@ ProfileMenu, route guards, ErrorBoundary) may live in `components/` but stay
 `templates/` holds working copies of the foundation files: `styles/tokens.css`,
 `styles/global.css`, `styles/typography.module.css`,
 `components/{polymorphic.ts,ActionElement.tsx,fieldContext.ts}`, `utils/{cx.ts,theme.ts}`,
-`hooks/useRovingSelection.ts`, `test/{cssGuardrails.ts,cssGuardrails.test.ts,dialogShim.ts}`.
+`hooks/{useRovingSelection.ts,useControllableState.ts}`, `test/{cssGuardrails.ts,cssGuardrails.test.ts,dialogShim.ts}`.
 Copy them, then replace `TEMPLATE:`-marked values with the project's own.
 
 ## The rules, and why
@@ -151,7 +151,9 @@ Functional components, named exports, `{Component}Props` interface,
 props destructured in the signature, co-located `X.module.css` and
 `X.test.tsx`. No hand-written `useMemo`/`useCallback` when the project runs
 React Compiler; with React 19 form actions, pending and error state flow
-through `SubmitButton` and `Field`. A JSDoc line on the component and on every non-obvious prop --
+through `SubmitButton` and `Field`. Stateful primitives accept both
+`value`/`defaultValue`/`onValueChange` (and `open`/`defaultOpen`/
+`onOpenChange`); multi-part ones are compound components over a context. A JSDoc line on the component and on every non-obvious prop --
 it becomes the guideline text in the catalog and in Claude Design. The full
 checklist, the common primitives (a reference list, not a checklist) and the
 anatomy of `Button`/`Field`/`Card` are in `references/components.md`.
@@ -179,11 +181,16 @@ anatomy of `Button`/`Field`/`Card` are in `references/components.md`.
 - **No router:** `ActionElement` drops the `to` branch.
 - **React 18:** refs aren't props -- wrap primitives in `forwardRef` and use
   `ComponentPropsWithoutRef` in `PolymorphicProps`.
+- **Server rendering (Next.js App Router, other RSC setups):** this skill
+  assumes a client-rendered app. There, any primitive using state, effects
+  or context (Field, Modal, Menu, Tooltip, the theme code) needs
+  `"use client"`, the pre-paint theme script goes in the root layout instead
+  of `index.html`, and router links come from the framework.
 
 ## References
 
 - `references/tokens.md` -- token naming, scales, themes and choosing one at runtime, adding a token, the guardrail
-- `references/components.md` -- common primitives, anatomy, prop conventions, React 19 forms, forced colors and reduced motion, checklist for a new primitive
+- `references/components.md` -- common primitives, anatomy, prop conventions, controlled/uncontrolled state, composition, React 19 forms, forced colors and reduced motion, checklist for a new primitive
 - `references/polymorphism.md` -- both patterns with full typings, usage, pitfalls
 - `references/overlays.md` -- Modal on native `<dialog>`, ConfirmDialog, Menu, Popover/bottom sheet, Tooltip, Toast, roving focus
 - `references/testing.md` -- guardrail test, dialog shim, what to assert, catalog page, axe scan
