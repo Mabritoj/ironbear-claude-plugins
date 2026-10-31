@@ -16,7 +16,7 @@ Use this when reviewing, validating, or editing an existing `template.yaml`.
 
 ## Parameters and environment separation
 
-Environment separation happens through named sections in `samconfig.toml` — `[prd]` (not `[prod]`). Each environment's `deploy.parameters` table carries its own `parameter_overrides`, which feed values into the template's `Parameters:` block — including things like the S3 bucket name. Example:
+Environment config lives in a named section of `samconfig.toml` — `[prd]` (not `[prod]`). Its `deploy.parameters` table carries `parameter_overrides`, which feed values into the template's `Parameters:` block — including things like the S3 bucket name. Example:
 
 ```toml
 version = 0.1
@@ -33,7 +33,7 @@ tags = "BACKUP=\"myapp-prd\""
 
 ```yaml
 # 1. samconfig.toml (per environment) supplies the value:
-#    parameter_overrides = "BucketName=\"myapp-dev-website\" Environment=\"dev\""
+#    parameter_overrides = "BucketName=\"myapp-prd-website\" Environment=\"prd\""
 
 # 2. template.yaml (root) — declares the parameter, then explicitly forwards
 #    it into the nested stack via that stack resource's own Parameters:
@@ -65,7 +65,7 @@ Resources:
       BucketName: !Ref BucketName
 ```
 
-Only once the value lands in the nested stack's own `Parameters` block does `!Ref BucketName` there resolve to `myapp-dev-website`. On first deploy, since that `AWS::S3::Bucket` resource is newly declared with that name, CloudFormation creates it — that's the "auto-create if not there": ordinary resource creation, not a distinct feature. Deploy commands specify which environment feeds this whole chain: `sam deploy --config-env dev` / `sam deploy --config-env prd`.
+Only once the value lands in the nested stack's own `Parameters` block does `!Ref BucketName` there resolve to `myapp-prd-website`. On first deploy, since that `AWS::S3::Bucket` resource is newly declared with that name, CloudFormation creates it — that's the "auto-create if not there": ordinary resource creation, not a distinct feature. The deploy command feeds this whole chain: `sam deploy --config-env prd`.
 
 ## Resource naming
 
@@ -73,7 +73,7 @@ Explicit naming is used everywhere — every resource in `template.yaml` and in 
 
 ## Tags
 
-A single tag, `BACKUP: <stack name>` — e.g. `BACKUP: myapp-dev`, `BACKUP: myapp-prd` — not a broader set (no cost center/owner tags). Applied stack-wide via the `tags` parameter in `samconfig.toml`'s `deploy.parameters` (see example above). Unlike parameters, this doesn't need the manual root-to-nested-stack forwarding described above — CloudFormation propagates stack-level tags down to nested stacks and their supported resources automatically. Flag a stack missing this tag, or a resource carrying some other ad hoc tag instead.
+A single tag, `BACKUP: <stack name>` — e.g. `BACKUP: myapp-prd` — not a broader set (no cost center/owner tags). Applied stack-wide via the `tags` parameter in `samconfig.toml`'s `deploy.parameters` (see example above). Unlike parameters, this doesn't need the manual root-to-nested-stack forwarding described above — CloudFormation propagates stack-level tags down to nested stacks and their supported resources automatically. Flag a stack missing this tag, or a resource carrying some other ad hoc tag instead.
 
 ## Common flags when reviewing
 
