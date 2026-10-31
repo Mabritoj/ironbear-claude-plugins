@@ -1,7 +1,7 @@
 ---
 type: llm
-focus: trace
+focus: { source: file, path: docs/design-system-audit.md }
 weight: 1
 ---
 
-docs/design-system-audit.md reports hardcoded colors outside the token file with file names (at least two of Button.module.css, Card.module.css, ProjectList.module.css, Logo.tsx) and reports that index.css removes the focus outline (button:focus { outline: none }) with no :focus-visible replacement.
+PASS if the document reports hardcoded colors outside the token file and names at least two of the files involved (Button.module.css, Card.module.css, ProjectList.module.css, Logo.tsx), AND reports that index.css removes the focus outline (button:focus { outline: none }) with no :focus-visible replacement. FAIL if either part is missing.

@@ -47,6 +47,33 @@ Why each choice:
 - **`color-scheme` per theme** so native controls, scrollbars and the date
   picker match.
 
+## Choosing the theme at runtime
+
+`data-theme` on `<html>` decides the page theme; a subtree's own
+`data-theme` still overrides it. Default to the OS setting, let the user
+override it, and apply it **before first paint** -- setting it from a React
+effect flashes the light theme on every dark-mode load. In `index.html`,
+before the stylesheets:
+
+```html
+<script>
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+```
+
+After load, `templates/utils/theme.ts` handles the rest:
+`setThemePreference('system' | 'light' | 'dark')` for the settings control,
+and `watchSystemTheme()` (call once at startup) so a 'system' preference
+follows the OS when it switches. If the app keeps the preference in a store
+or on the server, have that call `applyTheme` instead of using localStorage.
+A strict Content-Security-Policy needs the inline script's hash allowed.
+
+Without JavaScript the page stays on the first (default) theme block.
+
 ## Naming
 
 | Family | Names | Notes |

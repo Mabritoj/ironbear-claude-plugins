@@ -1,4 +1,4 @@
 schema_version: "1.1"
 name: new-app-foundation
 expected_outcome: |
-  A src/ tree with a single tokens file (light + dark themes keyed on [data-theme], scales for type/space/radius/shadow, usage comments, literal color values), a Button typed as a discriminated union on to/href (router Link / anchor / button type="button"), a Card with a typed `as` prop, a test that fails on raw colors in stylesheets, named exports only, and a barrel index of the primitives.
+  A src/ tree with a single tokens file (light + dark themes keyed on [data-theme], scales for type/space/radius/shadow, usage comments, literal color values), a Button typed as a discriminated union on to/href (router Link / anchor / button type="button"), a Card with a typed `as` prop, a test that fails on raw colors in stylesheets, named exports only, a barrel index of the primitives, durations zeroed under prefers-reduced-motion, a theme that follows the OS and is applied before first paint, and no broad set of unrequested components.

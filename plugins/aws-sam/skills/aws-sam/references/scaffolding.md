@@ -77,7 +77,7 @@ Bundling uses esbuild via SAM's built-in `Metadata.BuildMethod: esbuild` on each
 - `sam init` — only for brand-new projects; prefer copying the established layout above for consistency over the interactive wizard's defaults.
 - `sam build` — before every local test or deploy.
 - `sam local invoke <FunctionLogicalId> -e handlers/<service-name>/<path>/<name>.event.json` — for local testing against a sample event, e.g. `sam local invoke IdentityFunction -e handlers/identity/user/get.event.json`.
-- `sam deploy --config-env dev` / `sam deploy --config-env prd` — deploy parameters, tags, and stack name are already predefined per environment in `samconfig.toml` (see `template-review.md`'s Parameters and environment separation section), so the interactive `--guided` wizard generally isn't needed once `samconfig.toml` exists. `--guided` is only for the very first time setting up `samconfig.toml` itself.
+- `sam deploy --config-env prd` — deploy parameters, tags, and stack name are already predefined for the environment in `samconfig.toml` (see `template-review.md`'s Parameters and environment separation section), so the interactive `--guided` wizard generally isn't needed once `samconfig.toml` exists. `--guided` is only for the very first time setting up `samconfig.toml` itself.
 
 ## Naming conventions
 
@@ -91,7 +91,7 @@ The corresponding Logical ID in `template.yaml` is the PascalCase version of the
 | `handlers/orders/` | `OrdersFunction` |
 | `handlers/billing/` | `BillingFunction` |
 
-Environment separation naming is covered separately, in `template-review.md`'s Parameters and environment separation section (`[dev]`/`[prd]` sections in `samconfig.toml`).
+Environment separation naming is covered separately, in `template-review.md`'s Parameters and environment separation section (the `[prd]` section in `samconfig.toml`).
 
 ## package.json / tsconfig defaults
 

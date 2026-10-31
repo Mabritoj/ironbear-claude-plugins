@@ -22,6 +22,41 @@ Copy `templates/test/cssGuardrails.ts` and `cssGuardrails.test.ts` into
 It makes "no raw colors, no raw fonts, no outline: none" a build failure,
 which is the only thing that keeps a cleaned-up codebase clean.
 
+## Lint rules
+
+The guardrail test fails CI; lint rules flag the same problems in the
+editor, while they're being written, and cover JSX the CSS test can't see.
+Two templates, each a config to merge into what the project already has
+(adding stylelint or ESLint plugins is a new dev dependency -- ask first):
+
+- `templates/lint/stylelint.config.mjs` -- outside `tokens.css`: no hex,
+  named colors or color functions (`rgb()`, `hsl()`, `oklch()`...), no
+  `outline: none`, `font-family` only from `var(--font-*)`. `color-mix()`
+  over tokens, `currentColor`, `transparent` and forced-colors system colors
+  (`Highlight`, `CanvasText`) pass. Exceptions are a
+  `/* stylelint-disable-next-line <rule> -- reason */` comment, and a disable
+  without a reason is itself an error.
+- `templates/lint/eslint.design-system.js` -- a flat-config fragment:
+  `jsx-a11y` recommended (alt text, labels, valid ARIA), `react-hooks`
+  recommended, and `no-restricted-syntax` rules that flag:
+  - inline `style` objects with real CSS properties (custom properties like
+    `{ '--swatch': hex }` pass) -- everywhere under `src/`;
+  - raw `<button>`, `<input>`, `<select>`, `<textarea>`, `<dialog>` in
+    feature and route folders -- use or extend a primitive;
+  - `onClick` handlers calling `navigate()` in feature code -- use a link.
+
+ESLint's `no-restricted-syntax` doesn't merge across config entries (a
+later entry for the same files replaces it), which is why the feature-folder
+entry repeats the inline-style selector. Keep both lists together when
+editing. Checked against ESLint 10 and Stylelint 17; `eslint-plugin-jsx-a11y`
+6.10 doesn't list ESLint 10 as a peer yet, so on 10 npm needs
+`--legacy-peer-deps` (it works).
+
+Keep the CSS guardrail test either way: it's the check CI can't skip, and it
+needs no extra dependencies. In a drifted app, start the lint rules as
+`warn`, or with the same allowlist idea as the guardrail, and flip to
+`error` once a folder is migrated.
+
 ## Native dialog in jsdom
 
 jsdom implements `<dialog>` but not `showModal()`/`close()`. Install
@@ -90,10 +125,40 @@ sheet can be checked. Look at it at 375px, 768px and desktop after any
 primitive or token change. If the project later adopts Storybook (a new
 dependency -- ask first), each catalog section maps to a story.
 
+## Automated accessibility check
+
+Role queries prove a primitive *can* be found by name; they don't catch low
+contrast, missing names elsewhere, or invalid ARIA. Run axe against the
+catalog page, which renders every primitive in both themes, so one scan
+covers the whole system (`@axe-core/playwright` -- a new dev dependency,
+ask first):
+
+```ts
+import AxeBuilder from '@axe-core/playwright';
+import { expect, test } from '@playwright/test';
+
+test('design catalog has no axe violations', async ({ page }) => {
+  await page.goto('/__design');
+  const { violations } = await new AxeBuilder({ page }).analyze();
+  expect(violations.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
+});
+```
+
+- Overlays are closed by default, so axe can't see their contents: open each
+  one in the test (click the trigger) and scan again.
+- Automated checks catch only part of WCAG (estimates run from about a
+  third to about half of issues). Keyboard flow, focus order,
+  focus return and screen-reader wording still need the keyboard tests above
+  and a manual pass.
+- With an existing drifted app, start with `.disableRules([...])` or an
+  allowlist of today's violations, the same way the CSS guardrail starts.
+
 ## Browser verification
 
 Use Playwright (or the project's e2e tool) for: both themes, phone/tablet/
 desktop widths, horizontal-overflow check
 (`document.documentElement.scrollWidth > innerWidth`), overlays' focus
-behavior. For migrations, take before/after full-page screenshots of every
+behavior, and the two OS settings jsdom can't emulate:
+`page.emulateMedia({ forcedColors: 'active' })` (selected/pressed states must
+still be visible) and `page.emulateMedia({ reducedMotion: 'reduce' })`. For migrations, take before/after full-page screenshots of every
 page and diff them: the only differences should be the ones you intended.

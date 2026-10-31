@@ -28,7 +28,9 @@ else, keep the principles and translate the mechanics (see "Other stacks").
 
 Look at the project before deciding anything: an existing `tokens.css`,
 `components/` folder, CLAUDE.md conventions or catalog page beats this skill's
-defaults. Match what's there; propose changes to it explicitly rather than
+defaults. The component names, variants and props in this skill are examples
+of the patterns, not a required set: build the primitives the app's features
+need, in the project's vocabulary. Match what's there; propose changes to it explicitly rather than
 silently introducing a second convention. When a task touches one part of a
 drifted system (add a component, fix a page), do that task in the system's
 best existing style, then list the drift you noticed (hardcoded colors,
@@ -53,6 +55,7 @@ src/
     ...
   hooks/                    # shared hooks (useRovingSelection, useDismissablePanel)
   utils/cx.ts               # class-name joiner
+  utils/theme.ts            # theme preference: system/light/dark, persisted
   utils/format.ts           # shared formatters -- never redefined per component
   routes/DesignCatalog.tsx  # dev-only page rendering every primitive in every theme
   test/
@@ -68,8 +71,9 @@ ProfileMenu, route guards, ErrorBoundary) may live in `components/` but stay
 
 `templates/` holds working copies of the foundation files: `styles/tokens.css`,
 `styles/global.css`, `styles/typography.module.css`,
-`components/{polymorphic.ts,ActionElement.tsx,fieldContext.ts}`, `utils/cx.ts`,
-`hooks/useRovingSelection.ts`, `test/{cssGuardrails.ts,cssGuardrails.test.ts,dialogShim.ts}`.
+`components/{polymorphic.ts,ActionElement.tsx,fieldContext.ts}`, `utils/{cx.ts,theme.ts}`,
+`hooks/{useRovingSelection.ts,useControllableState.ts}`, `test/{cssGuardrails.ts,cssGuardrails.test.ts,dialogShim.ts}`,
+`lint/{stylelint.config.mjs,eslint.design-system.js}` (project root).
 Copy them, then replace `TEMPLATE:`-marked values with the project's own.
 
 ## The rules, and why
@@ -80,11 +84,16 @@ Copy them, then replace `TEMPLATE:`-marked values with the project's own.
    colors by role (`--color-warning` = needs attention, `--color-destructive`
    = errors and irreversible actions), not by hue, so a rename never ripples.
    A guardrail test fails on hex/rgb/hsl, font names and `outline: none`
-   anywhere else -- without it, drift comes back within weeks.
+   anywhere else -- without it, drift comes back within weeks. Lint rules
+   (`templates/lint/`) flag the same in the editor, plus raw controls,
+   navigating buttons and inline styles in feature code.
 
 2. **Themes key on `[data-theme]`, not `:root[data-theme]`.** Then a subtree
    can opt in (`<div data-theme="dark">` on an always-dark login page) instead
    of a page mutating the global theme on mount, or carrying a private palette.
+   The page theme defaults to the OS setting, can be overridden by the user,
+   and is applied by an inline script before first paint, not from an effect
+   (`references/tokens.md`, `templates/utils/theme.ts`).
 
 3. **Reach for a primitive before writing a local control.** A hand-styled
    `<button>`, `<input>`, card or badge in a feature is how the drift starts.
@@ -116,6 +125,10 @@ Copy them, then replace `TEMPLATE:`-marked values with the project's own.
    wires label/hint/error to its control through context; `IconButton`
    requires `label`; errors use `role="alert"`; tabs and radio groups use
    roving tabindex; overlays manage focus. One global `:focus-visible` ring.
+   States stay visible in Windows High Contrast (`forced-colors`), which
+   drops backgrounds and shadows; transitions use the `--duration-*` tokens
+   so `prefers-reduced-motion` can zero them; pointer targets are at least
+   24x24px. Details: `references/components.md`.
 
 8. **Labels in sentence case; caps are a style.** JSX says `"Net weight"`,
    CSS applies `text-transform: uppercase`. Screen readers may spell out
@@ -139,14 +152,20 @@ Copy them, then replace `TEMPLATE:`-marked values with the project's own.
 
 Functional components, named exports, `{Component}Props` interface,
 props destructured in the signature, co-located `X.module.css` and
-`X.test.tsx`. A JSDoc line on the component and on every non-obvious prop --
+`X.test.tsx`. No hand-written `useMemo`/`useCallback` when the project runs
+React Compiler; with React 19 form actions, pending and error state flow
+through `SubmitButton` and `Field`. Stateful primitives accept both
+`value`/`defaultValue`/`onValueChange` (and `open`/`defaultOpen`/
+`onOpenChange`); multi-part ones are compound components over a context. A JSDoc line on the component and on every non-obvious prop --
 it becomes the guideline text in the catalog and in Claude Design. The full
-checklist, the primitive inventory and the anatomy of `Button`/`Field`/`Card`
-are in `references/components.md`.
+checklist, the common primitives (a reference list, not a checklist) and the
+anatomy of `Button`/`Field`/`Card` are in `references/components.md`.
 
 ## Verifying a change
 
-- `typecheck`, `lint`, the test suite (guardrails included) -- all green.
+- `typecheck`, `lint` (the design-system rules included), the test suite
+  (guardrails included) -- all green.
+- The axe scan of the catalog page passes (`references/testing.md`).
 - Look at it in a real browser, in **both themes**, at ~375px, 768px and
   desktop. jsdom can't show you top-layer dialogs, focus trapping, layout or
   specificity fights; `references/testing.md` lists what it can't emulate.
@@ -166,13 +185,18 @@ are in `references/components.md`.
 - **No router:** `ActionElement` drops the `to` branch.
 - **React 18:** refs aren't props -- wrap primitives in `forwardRef` and use
   `ComponentPropsWithoutRef` in `PolymorphicProps`.
+- **Server rendering (Next.js App Router, other RSC setups):** this skill
+  assumes a client-rendered app. There, any primitive using state, effects
+  or context (Field, Modal, Menu, Tooltip, the theme code) needs
+  `"use client"`, the pre-paint theme script goes in the root layout instead
+  of `index.html`, and router links come from the framework.
 
 ## References
 
-- `references/tokens.md` -- token naming, scales, themes, adding a token, the guardrail
-- `references/components.md` -- primitive inventory, anatomy, prop conventions, checklist for a new primitive
+- `references/tokens.md` -- token naming, scales, themes and choosing one at runtime, adding a token, the guardrail
+- `references/components.md` -- common primitives, anatomy, prop conventions, controlled/uncontrolled state, composition, React 19 forms, forced colors and reduced motion, checklist for a new primitive
 - `references/polymorphism.md` -- both patterns with full typings, usage, pitfalls
-- `references/overlays.md` -- Modal on native `<dialog>`, ConfirmDialog, Menu, Popover/bottom sheet, roving focus
-- `references/testing.md` -- guardrail test, dialog shim, what to assert, catalog page
+- `references/overlays.md` -- Modal on native `<dialog>`, ConfirmDialog, Menu, Popover/bottom sheet, Tooltip, Toast, roving focus
+- `references/testing.md` -- guardrail test, lint rules, dialog shim, what to assert, catalog page, axe scan
 - `references/audit-and-migration.md` -- measuring drift, phased plan, migrating pages safely
 - `references/claude-design-system.md` -- code layout that converts into a Claude Design System artifact, and how the conversion maps

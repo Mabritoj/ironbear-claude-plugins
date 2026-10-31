@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: migrate-project-list-existing-app
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  ProjectList cards are links (Card rendered as a router Link or wrapping one) instead of onClick + navigate(), the heading is sentence case in JSX, the module has no hex colors, no page-local 1080px max-width and no className that overrides the Card's padding/colors; the header and other pages are untouched; the final message lists drift elsewhere and reports checks honestly.

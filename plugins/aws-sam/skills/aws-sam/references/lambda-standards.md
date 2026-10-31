@@ -266,7 +266,7 @@ This is the complete pattern: module-scope SDK client, the logger threaded in fr
 
 ## Testing
 
-Test framework is Jest. AWS SDK calls are mocked with `aws-sdk-client-mock`, not hit against real AWS resources — it patches the SDK client class's `send()` method, so tests stay fast and need no credentials or live dev environment. This works regardless of where the client is instantiated (module scope vs. per-invocation), since it patches the class rather than a specific instance.
+Test framework is Jest. AWS SDK calls are mocked with `aws-sdk-client-mock`, not hit against real AWS resources — it patches the SDK client class's `send()` method, so tests stay fast and need no credentials or live AWS environment. This works regardless of where the client is instantiated (module scope vs. per-invocation), since it patches the class rather than a specific instance.
 
 A sample event payload for `sam local invoke` is colocated the same way — `get.event.json` beside `get.ts` and `get.test.ts` — rather than centralized in one file per service. A service handles many methods and paths, so one shared event file per service can't represent all of them; one per operation, living right next to that operation's code, can.
 
@@ -295,4 +295,4 @@ test('returns a user by id', async () => {
 });
 ```
 
-Mocked unit tests verify the code calls the SDK correctly, not that the real DynamoDB table, IAM permissions, or API Gateway integration are wired up right in AWS — that's what `sam local invoke` or a deployed dev stack are for, as a separate integration-testing layer.
+Mocked unit tests verify the code calls the SDK correctly, not that the real DynamoDB table, IAM permissions, or API Gateway integration are wired up right in AWS — that's what `sam local invoke` or a deployed stack are for, as a separate integration-testing layer.

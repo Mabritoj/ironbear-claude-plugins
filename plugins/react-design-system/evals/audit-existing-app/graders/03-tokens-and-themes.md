@@ -1,7 +1,7 @@
 ---
 type: llm
-focus: trace
+focus: { source: file, path: docs/design-system-audit.md }
 weight: 1
 ---
 
-docs/design-system-audit.md notes that tokens are named by hue (--blue-500, --gray-*) rather than role, and that the dark theme is scoped to :root[data-theme] and/or redefines only some tokens.
+PASS if the document notes that tokens are named by hue (e.g. --blue-500, --gray-*) rather than by role, AND notes a theme-structure problem: the dark theme is scoped to :root[data-theme] and/or redefines only some tokens. FAIL if either is missing.
